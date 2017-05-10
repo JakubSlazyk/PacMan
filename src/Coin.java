@@ -1,6 +1,6 @@
 
 public class Coin extends Character{
-	
+	String test;
 	public Coin(int x,int y){
 		speed=0;
 		cord=new Point(10,10,8,8);
