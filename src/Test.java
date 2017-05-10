@@ -7,7 +7,7 @@ public class Test {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				System.out.print("TEST test teasfasfasf");
+				System.out.print("Najnowszy ostatni test");
 				new ObrazFrame();
 			}
 		});
