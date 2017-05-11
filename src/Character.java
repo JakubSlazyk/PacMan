@@ -5,7 +5,7 @@ public abstract class Character {
 	protected String dir;
 	protected String NewDir;
 	protected int speed;
-	
+	String test;
 	public int getSpeed()
 	{
 		return speed;
