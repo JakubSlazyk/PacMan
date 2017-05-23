@@ -29,16 +29,20 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	private int TimeInterval;
 	private Set <Point> mapPoints,coinPoints;
 	private Set <Creep> MonstersList;
+	private Set <PowerUp> powerUpsList;
 	private Map map,coins;
+	private int Timing;
 	private Point eatenCoinId;
 	private int MonstersQuantity;
 	private boolean isGamePaused;
 	public void SetVariables()
-	{	isGamePaused=true;
+	{	Timing=0;
+		isGamePaused=true;
 		ImagePixels=32;
 		Player=new Packman();
 		MonstersQuantity=4;
 		MonstersList = new HashSet<Creep>();
+		powerUpsList = new HashSet<PowerUp>();
 		for(int i=0;i<MonstersQuantity;i++)
 		{
 		Monster = new Creep();
@@ -55,7 +59,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		}
 		
 		try {
-			obrazPanel = new ObrazPanel(Player,map,Monster,coins,MonstersList);
+			obrazPanel = new ObrazPanel(Player,map,Monster,coins,MonstersList,powerUpsList);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -64,6 +68,8 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		
 		pack();
 		TimeInterval=1000/32;
+		PowerUp.respawnTime=TimeInterval*5;
+		System.out.println(PowerUp.respawnTime);
 		setBackground(Color.black);
 		setVisible(true);
 		
@@ -285,6 +291,16 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		return true;
 	
 	}
+	public void addPowerUp()
+	{
+		PowerUp powerUp = new PowerUp();
+		powerUpsList.add(powerUp);
+	}
+	public void deletePowerUp(PowerUp power)
+	{
+		powerUpsList.remove(power);
+	}
+	
 	public void Move(Character figure)
 	{				
 			switch(figure.getDir())
@@ -537,12 +553,22 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		super("Pacman");
 		addKeyListener(this);
 		SetVariables();		
+		
 				timer = new Timer(TimeInterval,new ActionListener(){
 				
 					@Override
 					public void actionPerformed(ActionEvent arg0) {	
-							if(!isGamePaused){
 							
+							
+							
+							if(!isGamePaused){
+								Timing++;
+								if(Timing==PowerUp.respawnTime)
+								{
+									System.out.println("Spawn power up");
+									addPowerUp();
+									Timing=0;
+								}
 							Move(Player);
 							for(Creep monster : MonstersList)
 							{
