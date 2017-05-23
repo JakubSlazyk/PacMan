@@ -21,6 +21,7 @@ public class ObrazPanel extends JPanel{
 	private Creep Monster;
 	private Map map,coins;
 	private Set <Creep> MonstersList;
+	private Set <PowerUp> powerUpsList;
 	public void drawMap(Graphics g) throws FileNotFoundException
 	{	Graphics2D g2d = (Graphics2D) g;
 		
@@ -153,13 +154,14 @@ public class ObrazPanel extends JPanel{
 		g2d.drawImage(imageMonster,Monster.getPixelsX(),Monster.getPixelsY(), this);
 		
 	}
-	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList) throws FileNotFoundException {
+	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList,Set<PowerUp> powerUpsList) throws FileNotFoundException {
 		super();
 		this.Player = Player;
 		this.map=map;
 		this.coins=coins;
 		this.Monster = Monster;
 		this.MonstersList=MonstersList;
+		this.powerUpsList=powerUpsList;
 		File imageCoinFile = new File("Resources/Img/berry.png");
 		File imageWallFile = new File("Resources/Img/Blue.png");
 		File imagePlayerFile = new File("Resources/Img/Pacman45R.png");
@@ -168,7 +170,6 @@ public class ObrazPanel extends JPanel{
 			imageWall = ImageIO.read(imageWallFile);
 			imagePlayer = ImageIO.read(imagePlayerFile);
 			imageMonster = ImageIO.read(imageMonsterFile);
-			imageWall.set
 			imageCoin = ImageIO.read(imageCoinFile);
 		} catch (IOException e) {
 			System.err.println("Blad odczytu obrazka");
@@ -261,7 +262,25 @@ public class ObrazPanel extends JPanel{
 		
 		
 	}
-	
+	public void drawPowerUp(Graphics g,PowerUp powerUp)
+	{
+		Graphics2D g2d = (Graphics2D) g;
+		try {
+			BufferedImage imagePowerUp = ImageIO.read(powerUp.getPowerUpFile());
+			g2d.drawImage(imagePowerUp, powerUp.getX(), powerUp.getPixelsY(), this);	
+		} catch (IOException e) {
+		
+			e.printStackTrace();
+		}
+	}
+	public void drawPowerUps(Graphics g) {
+		
+			for(PowerUp powerUp: powerUpsList)
+			{
+				drawPowerUp(g, powerUp);
+			}
+
+	}
 	@Override
 	public void paintComponent(Graphics g) {
 		try {
@@ -269,6 +288,7 @@ public class ObrazPanel extends JPanel{
 			drawMap(g);
 			drawPackman(g);
 			drawGUI(g);
+			drawPowerUps(g);
 			for(Creep monster : MonstersList)
 			{
 			Monster=monster;
