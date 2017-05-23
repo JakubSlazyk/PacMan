@@ -510,8 +510,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	{
 		if(!collision(Player.getDir(),Player,coinPoints,1))
 		{
+			Player.setPoints(Player.getPoints()+1);
 			coinPoints.remove(eatenCoinId);
 			coins.set_mapPoints(coinPoints);
+			System.out.println(Player.getPoints());
 		}
 	}
 	public void Ghost_Player_Collision_Check()
@@ -522,7 +524,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		{
 		Point tempPunkt=new Point(monster.getPixelsX()+monster.getHeight()/2,monster.getPixelsY()+monster.getHeight()/2,16,16);
 		MonsterPositions.add(tempPunkt);
-		System.out.println(monster.getPixelsX()/32+" "+monster.getPixelsY()/32);
+		//System.out.println(monster.getPixelsX()/32+" "+monster.getPixelsY()/32);
 		}
 		if(!collision2(Player.getDir(),Player,MonsterPositions,1))
 		{
