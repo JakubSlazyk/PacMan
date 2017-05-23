@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class ObrazPanel extends JPanel{
@@ -167,22 +168,107 @@ public class ObrazPanel extends JPanel{
 			imageWall = ImageIO.read(imageWallFile);
 			imagePlayer = ImageIO.read(imagePlayerFile);
 			imageMonster = ImageIO.read(imageMonsterFile);
+			imageWall.set
 			imageCoin = ImageIO.read(imageCoinFile);
 		} catch (IOException e) {
 			System.err.println("Blad odczytu obrazka");
 			e.printStackTrace();
 		}
 		
-		Dimension dimension = new Dimension(800,640);
+		Dimension dimension = new Dimension(1000,640);
 		setPreferredSize(dimension);
 		
 	}
+	public void drawScore(int scoreLength,Graphics g)
+	{	Graphics2D g2d = (Graphics2D) g;
+		int temp=Player.getPoints();
+		int wykl=(int) Math.pow(10, (double)scoreLength-1);
+		int modulo=1;
+		
+		for(int i=0;i<scoreLength;i++)
+		{
+		int number=(temp/wykl)%10;
+		
+		wykl/=10;
+		
+		File imageNumberFile = null;
+		
+			switch(number)
+			{
+			case 0:
+				imageNumberFile = new File("Resources/Img/Numbers/0.png");
+				break;
+			case 1:
+				imageNumberFile = new File("Resources/Img/Numbers/1.png");
+				break;
+			case 2:
+				imageNumberFile = new File("Resources/Img/Numbers/2.png");
+				break;
+			case 3:
+				imageNumberFile = new File("Resources/Img/Numbers/3.png");
+				break;
+			case 4:
+				imageNumberFile = new File("Resources/Img/Numbers/4.png");
+				break;
+			case 5:
+				imageNumberFile = new File("Resources/Img/Numbers/5.png");
+				break;
+			case 6:
+				imageNumberFile = new File("Resources/Img/Numbers/6.png");
+				break;
+			case 7:
+				imageNumberFile = new File("Resources/Img/Numbers/7.png");
+				break;
+			case 8:
+				imageNumberFile = new File("Resources/Img/Numbers/8.png");
+				break;
+			case 9:
+				imageNumberFile = new File("Resources/Img/Numbers/9.png");
+				break;
+			}
+		
+			try {
+				BufferedImage imageNumber = ImageIO.read(imageNumberFile);
+				g2d.drawImage(imageNumber, 865+(i*15), 75, this);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
+	}
+	public void drawGUI(Graphics g)
+	{
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(Color.GRAY);
+		g2d.setStroke(new BasicStroke(8));
+		g2d.drawLine(804, 0, 804, 640);
+		g2d.drawLine(804, 4, 996, 4);
+		g2d.drawLine(996, 4, 996, 636);
+		g2d.drawLine(801, 636, 996, 636);
+		//////////
+		File imageScoreFile = new File("Resources/Img/score.png");
+		try {
+			BufferedImage imageScore = ImageIO.read(imageScoreFile);
+			g2d.drawImage(imageScore, 848, 50, this);
+			drawScore(4,g);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		try {
 			drawCoins(g);
 			drawMap(g);
 			drawPackman(g);
+			drawGUI(g);
 			for(Creep monster : MonstersList)
 			{
 			Monster=monster;

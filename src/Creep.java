@@ -10,7 +10,7 @@ public class Creep extends Character {
 		pixels = new Point(320,320,32,32);
 		setDir("Right");
 		setNewDir("Right");
-		speed = 4;
+		speed = 8;
 		oldX=pixels.getX();
 		oldY=pixels.getY();
 	}
