@@ -17,29 +17,40 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 public class ObrazFrame extends JFrame implements KeyListener{
 	Packman Player;
 	Creep Monster;
 	private BufferedImage imageWall,imagePlayer;
+	private int monsterSpeed;
+	private int playerSpeed;
 	private int ImagePixels;
 	private JPanel obrazPanel;
 	private Timer timer;
 	private int TimeInterval;
-	private Set <Point> mapPoints,coinPoints;
+	private Set <Point> mapPoints,coinPoints,powerUpPoints;
 	private Set <Creep> MonstersList;
 	private Set <PowerUp> powerUpsList;
 	private Map map,coins;
 	private int Timing;
 	private Point eatenCoinId;
+	private Point eatenPowerUp;
 	private int MonstersQuantity;
 	private boolean isGamePaused;
+	private int scoreMultiplier;
 	public void SetVariables()
-	{	Timing=0;
+	{	
+		
+		scoreMultiplier=1;
+		Timing=0;
 		isGamePaused=true;
 		ImagePixels=32;
 		Player=new Packman();
+		playerSpeed=Player.getSpeed();
 		MonstersQuantity=4;
 		MonstersList = new HashSet<Creep>();
 		powerUpsList = new HashSet<PowerUp>();
@@ -47,6 +58,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		{
 		Monster = new Creep();
 		MonstersList.add(Monster);
+		monsterSpeed=Monster.getSpeed();
 		}
 		try {
 			map= new Map(ImagePixels,ImagePixels,"Resources/Maps/map.txt");
@@ -69,6 +81,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		pack();
 		TimeInterval=1000/32;
 		PowerUp.respawnTime=TimeInterval*5;
+		PowerUp.duration=TimeInterval*5;
 		System.out.println(PowerUp.respawnTime);
 		setBackground(Color.black);
 		setVisible(true);
@@ -149,7 +162,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		}		
 		return true;
 	}
-	boolean collision2(String dir, Character figure,Set <Point> mapPoints,int offset)
+	boolean collision2(String dir, Character figure,Set <Point> mapPoints,int offset,int which)
 	{
 		
 		for(Point punkt : mapPoints)
@@ -158,14 +171,31 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				
 				if(inside2(figure.getPixelsX()+offset,figure.getPixelsY(),punkt))
 				{
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					
-					eatenCoinId=punkt;
+					
+					
 					return false;
 				}
 				if(inside2(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY(),punkt))
 				{
-					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				
@@ -174,14 +204,28 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				
 				if(inside2(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+offset,punkt))
 				{
-				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside2(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
-					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}	
 				
@@ -189,28 +233,56 @@ public class ObrazFrame extends JFrame implements KeyListener{
 			
 				if(inside2(figure.getPixelsX()+offset,figure.getPixelsY()+figure.getHeight(),punkt))
 				{
-					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside2(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
-					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}	
 			
 			
 				if(inside2(figure.getPixelsX(),figure.getPixelsY()+offset,punkt))
 				{
-				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside2(figure.getPixelsX(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
-				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				
@@ -219,7 +291,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		return true;
 	
 	}
-	boolean collision(String dir, Character figure,Set <Point> mapPoints,int offset)
+	boolean collision(String dir, Character figure,Set <Point> mapPoints,int offset,int which)
 	{
 		
 		for(Point punkt : mapPoints)
@@ -229,13 +301,29 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				if(inside(figure.getPixelsX()+offset,figure.getPixelsY(),punkt))
 				{
 					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY(),punkt))
 				{
 					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				
@@ -245,13 +333,29 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				if(inside(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+offset,punkt))
 				{
 				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
 					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}	
 				
@@ -261,13 +365,29 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				if(inside(figure.getPixelsX()+offset,figure.getPixelsY()+figure.getHeight(),punkt))
 				{
 					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside(figure.getPixelsX()+figure.getHeight(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
 					
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}	
 			}
@@ -276,13 +396,29 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				if(inside(figure.getPixelsX(),figure.getPixelsY()+offset,punkt))
 				{
 				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				if(inside(figure.getPixelsX(),figure.getPixelsY()+figure.getHeight(),punkt))
 				{
 				
-					eatenCoinId=punkt;
+					switch(which)
+					{
+					case 1:
+						eatenCoinId=punkt;
+						break;
+					case 2:
+						eatenPowerUp=punkt;
+						break;
+					}
 					return false;
 				}
 				
@@ -293,8 +429,26 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	}
 	public void addPowerUp()
 	{
-		PowerUp powerUp = new PowerUp();
+		int random=new Random().nextInt(coinPoints.size());
+		int i=0;
+		int x=0,y=0;
+		for(Point point: coinPoints)
+		{
+			if(random==i)
+			{
+				x=point.getX();
+				y=point.getY();
+				break;
+			}
+			else
+				{i++;
+				}
+			
+		}
+		System.out.println(random+" "+x+" "+y);
+		PowerUp powerUp = new PowerUp(x,y);
 		powerUpsList.add(powerUp);
+		System.out.println("Spawn power up :"+powerUp.getPowerUpIndex());
 	}
 	public void deletePowerUp(PowerUp power)
 	{
@@ -309,7 +463,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				
 				figure.setPixelsY(figure.getPixelsY()-figure.getSpeed());	
 				
-				if(!collision(figure.getDir(),figure,mapPoints,1)){
+				if(!collision(figure.getDir(),figure,mapPoints,1,3)){
 					
 					figure.setPixelsY(figure.getPixelsY()+figure.getSpeed());	
 				}
@@ -320,7 +474,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 			case "Down":
 				
 				figure.setPixelsY((figure.getPixelsY()+figure.getSpeed())%640);	
-				if(!collision(figure.getDir(),figure,mapPoints,1)){
+				if(!collision(figure.getDir(),figure,mapPoints,1,3)){
 					
 					figure.setPixelsY(figure.getPixelsY()-figure.getSpeed());
 				}
@@ -329,7 +483,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 			case "Right":
 				
 				figure.setPixelsX((figure.getPixelsX()+figure.getSpeed())%800);	
-				if(!collision(figure.getDir(),figure,mapPoints,1)){
+				if(!collision(figure.getDir(),figure,mapPoints,1,3)){
 					figure.setPixelsX(figure.getPixelsX()-figure.getSpeed());	
 				}
 				
@@ -337,7 +491,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 				break;
 			case "Left":
 				figure.setPixelsX(figure.getPixelsX()-figure.getSpeed());	
-				if(!collision(figure.getDir(),figure,mapPoints,1)){
+				if(!collision(figure.getDir(),figure,mapPoints,1,3)){
 					figure.setPixelsX(figure.getPixelsX()+figure.getSpeed());	
 				}
 				if(figure.getPixelsX()==0)
@@ -524,9 +678,9 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	}
 	public void eatCoins()
 	{
-		if(!collision(Player.getDir(),Player,coinPoints,1))
+		if(!collision(Player.getDir(),Player,coinPoints,1,1))
 		{
-			Player.setPoints(Player.getPoints()+1);
+			Player.setPoints(Player.getPoints()+1*scoreMultiplier);
 			coinPoints.remove(eatenCoinId);
 			coins.set_mapPoints(coinPoints);
 			System.out.println(Player.getPoints());
@@ -542,13 +696,88 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		MonsterPositions.add(tempPunkt);
 		//System.out.println(monster.getPixelsX()/32+" "+monster.getPixelsY()/32);
 		}
-		if(!collision2(Player.getDir(),Player,MonsterPositions,1))
+		if(!collision2(Player.getDir(),Player,MonsterPositions,1,3))
 		{
 			isGamePaused=true;
 			System.out.println("KONIEC");
 		}
 		MonsterPositions.removeAll(MonsterPositions);
 	}
+	public void PowerUp_Player_Collision_Check()
+	{
+		Set <Point> PowerUpsPosition = new HashSet<Point>();
+		for(PowerUp powerUp : powerUpsList)
+		{
+			Point tempPunkt=new Point(powerUp.getX(),powerUp.getY(),32,32);
+			PowerUpsPosition.add(tempPunkt);
+			
+		}
+		if(!collision(Player.getDir(), Player, PowerUpsPosition, 1,2))
+		{	
+			System.out.println("Eaten:"+eatenPowerUp.getX()+" "+eatenPowerUp.getY());
+			for(PowerUp powerUp : powerUpsList)
+			{
+				if(eatenPowerUp.getX()==powerUp.getX() && powerUp.getY()==eatenPowerUp.getY())
+				{
+					getPowered(powerUp);
+					powerUpsList.remove(powerUp);
+					break;
+				}
+				System.out.println("PowerUp:"+powerUp.getX()+" "+powerUp.getY());
+			}
+			
+		}
+		
+		
+		powerUpsList.removeAll(PowerUpsPosition);
+	}
+	public void changeMap()
+	{
+		
+	}
+	public void getPowered(PowerUp power)
+	{
+		switch (power.getPowerUpIndex())
+		{
+		case 1:
+			Player.setLasersCounter(Player.getLasersCounter()+1);
+		break;
+		case 2:
+			changeMap();
+		break;
+		case 3:
+			if(Player.getSpeed()==playerSpeed)
+			{
+				Player.setSpeed(Player.getSpeed()*2);
+				Player.setPowerUpDuration(PowerUp.duration);
+				
+			}
+			else {
+				Player.setPowerUpDuration(Player.getPowerUpDuration()+PowerUp.duration);
+			}
+		break;
+		case 4:
+			for(Creep monster : MonstersList)
+			{
+				if(monster.getSpeed()==monsterSpeed)
+				{
+					monster.setSpeed(monster.getSpeed()/2);
+					monster.setPowerUpDuration(PowerUp.duration);
+				}
+				else
+					monster.setPowerUpDuration(monster.getPowerUpDuration()+PowerUp.duration);
+			}
+			break;
+		case 5:
+			scoreMultiplier=2;
+			Player.setMultiplierDuration(Player.getMultiplierDuration()+PowerUp.duration);
+			break;
+		}
+	}
+	
+	
+	
+	
 	public ObrazFrame() {	
 		super("Pacman");
 		addKeyListener(this);
@@ -565,18 +794,44 @@ public class ObrazFrame extends JFrame implements KeyListener{
 								Timing++;
 								if(Timing==PowerUp.respawnTime)
 								{
-									System.out.println("Spawn power up");
+									if(coinPoints.size()!=0)
 									addPowerUp();
 									Timing=0;
 								}
+								if(Player.getPowerUpDuration()!=0)
+								{
+									Player.setPowerUpDuration(Player.getPowerUpDuration()-1);
+								}
+								else
+								{
+									Player.setSpeed(playerSpeed);
+								}
+								if(Player.getMultiplierDuration()!=0)
+								{
+									Player.setMultiplierDuration(Player.getMultiplierDuration()-1);
+								}
+								else
+								{
+									scoreMultiplier=1;
+								}
+								
 							Move(Player);
 							for(Creep monster : MonstersList)
 							{
 							CrazyAI(monster);
 							Move(monster);
 							monster.UpdateCords();
+							if(monster.getPowerUpDuration()!=0)
+							{
+								monster.setPowerUpDuration(monster.getPowerUpDuration()-1);
+							}
+							else
+							{
+								monster.setSpeed(monsterSpeed);
+							}
 							}
 							Ghost_Player_Collision_Check();
+							PowerUp_Player_Collision_Check();
 							eatCoins();
 						}
 					}
@@ -618,7 +873,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 			
 			}
 		
-		//System.out.println(Player.dir);
+		
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
