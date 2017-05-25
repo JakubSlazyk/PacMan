@@ -6,6 +6,7 @@ public class PowerUp extends Character{
 	static int respawnTime;//w klatkach prawdopodobnie
 	private int TimeToLive;//w klatkach prawdopodobnie
 	private File powerUpFile;
+	static int duration;
 	/*
 	 * 1-strza³ 30%
 	 * 2-zmiana poziomu 10%
@@ -14,10 +15,10 @@ public class PowerUp extends Character{
 	 * 5-score x2 20%
 	 * 
 	 */
-	public PowerUp()
+	public PowerUp(int x,int y)
 	{
-		cord = new Point(10,10,32,32);
-		pixels = new Point(320,320,32,32);
+		cord = new Point(x,y,32,32);
+		pixels = new Point(x*32,y*32,32,32);
 		setDir("Right");
 		setNewDir("Right");
 		speed = 0;
@@ -62,6 +63,12 @@ public class PowerUp extends Character{
 	}
 	public void setPowerUpIndex(int powerUpIndex) {
 		this.powerUpIndex = powerUpIndex;
+	}
+	public int getTimeToLive() {
+		return TimeToLive;
+	}
+	public void setTimeToLive(int timeToLive) {
+		TimeToLive = timeToLive;
 	}
 	
 }

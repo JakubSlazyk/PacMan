@@ -267,7 +267,7 @@ public class ObrazPanel extends JPanel{
 		Graphics2D g2d = (Graphics2D) g;
 		try {
 			BufferedImage imagePowerUp = ImageIO.read(powerUp.getPowerUpFile());
-			g2d.drawImage(imagePowerUp, powerUp.getX(), powerUp.getPixelsY(), this);	
+			g2d.drawImage(imagePowerUp, powerUp.getPixelsX(), powerUp.getPixelsY(), this);	
 		} catch (IOException e) {
 		
 			e.printStackTrace();
@@ -288,12 +288,13 @@ public class ObrazPanel extends JPanel{
 			drawMap(g);
 			drawPackman(g);
 			drawGUI(g);
-			drawPowerUps(g);
+			
 			for(Creep monster : MonstersList)
 			{
 			Monster=monster;
 			drawMonster(g);
 			}
+			drawPowerUps(g);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
