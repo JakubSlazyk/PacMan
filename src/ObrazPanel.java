@@ -114,7 +114,7 @@ public class ObrazPanel extends JPanel{
 		switch(Monster.getDir())
 		{
 			case "Up":
-				tempCreep=new File("Resources/Img/creep_left.png");
+				tempCreep=new File("Resources/Img/ghost.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -123,7 +123,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Down":
-				tempCreep=new File("Resources/Img/creep_right.png");
+				tempCreep=new File("Resources/Img/ghost2.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -132,7 +132,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Left":
-				tempCreep=new File("Resources/Img/creep_left.png");
+				tempCreep=new File("Resources/Img/ghost.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -141,7 +141,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Right":
-				tempCreep=new File("Resources/Img/creep_right.png");
+				tempCreep=new File("Resources/Img/ghost2.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {

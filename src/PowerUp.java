@@ -28,7 +28,7 @@ public class PowerUp extends Character{
 		if(temp>=0 && temp<30)
 		{
 			setPowerUpIndex(1);
-			powerUpFile = new File("Resources/Img/Numbers/1.png");
+			powerUpFile = new File("Resources/Img/bullet.png");
 			}
 		if(temp>=30 && temp<40)
 		{
@@ -48,7 +48,7 @@ public class PowerUp extends Character{
 		if(temp>=80 && temp<100)
 		{
 			setPowerUpIndex(5);
-			powerUpFile = new File("Resources/Img/Numbers/5.png");
+			powerUpFile = new File("Resources/Img/x2.png");
 			}
 		
 	}
