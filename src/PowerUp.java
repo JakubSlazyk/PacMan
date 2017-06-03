@@ -28,27 +28,27 @@ public class PowerUp extends Character{
 		if(temp>=0 && temp<30)
 		{
 			setPowerUpIndex(1);
-			powerUpFile = new File("Resources/Img/bullet.png");
+			powerUpFile = new File("Resources/Img/PowerUps/bullet.png");
 			}
 		if(temp>=30 && temp<40)
 		{
 			setPowerUpIndex(2);
-			powerUpFile = new File("Resources/Img/Numbers/2.png");
+			powerUpFile = new File("Resources/Img/PowerUps/map.png");
 			}
 		if(temp>=40 && temp<70)
 		{
 			setPowerUpIndex(3);
-			powerUpFile = new File("Resources/Img/Numbers/3.png");
+			powerUpFile = new File("Resources/Img/PowerUps/Speed.jpg");
 			}
 		if(temp>=70 && temp<80)
 		{
 			setPowerUpIndex(4);
-			powerUpFile = new File("Resources/Img/Numbers/4.png");
+			powerUpFile = new File("Resources/Img/PowerUps/slow2.png");
 			}
 		if(temp>=80 && temp<100)
 		{
 			setPowerUpIndex(5);
-			powerUpFile = new File("Resources/Img/x2.png");
+			powerUpFile = new File("Resources/Img/PowerUps/x2.png");
 			}
 		
 	}

@@ -1,26 +1,18 @@
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Set;
-import java.lang.*;
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+import sun.security.x509.PrivateKeyUsageExtension;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Random;
 public class ObrazFrame extends JFrame implements KeyListener{
 	Packman Player;
@@ -34,7 +26,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	private int TimeInterval;
 	private Set <Point> mapPoints,coinPoints,powerUpPoints;
 	private Set <Creep> MonstersList;
+	private Set <Projectile> ProjectilesList;
 	private Set <PowerUp> powerUpsList;
+	private Set <Wall> wallsList;
+	private Set <Point> tempDestroyedWalls;
 	private Map map,coins;
 	private int Timing;
 	private Point eatenCoinId;
@@ -44,7 +39,7 @@ public class ObrazFrame extends JFrame implements KeyListener{
 	private int scoreMultiplier;
 	public void SetVariables()
 	{	
-		
+		tempDestroyedWalls=new HashSet<Point>();
 		scoreMultiplier=1;
 		Timing=0;
 		isGamePaused=true;
@@ -54,6 +49,8 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		MonstersQuantity=4;
 		MonstersList = new HashSet<Creep>();
 		powerUpsList = new HashSet<PowerUp>();
+		ProjectilesList = new HashSet<Projectile>();
+		
 		for(int i=0;i<MonstersQuantity;i++)
 		{
 		Monster = new Creep();
@@ -69,9 +66,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		Wall.CoordinatesList=mapPoints;
+		wallsList=Wall.addObjects();
 		try {
-			obrazPanel = new ObrazPanel(Player,map,Monster,coins,MonstersList,powerUpsList);
+			obrazPanel = new ObrazPanel(Player,map,Monster,coins,MonstersList,powerUpsList,ProjectilesList);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -309,6 +307,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 					case 2:
 						eatenPowerUp=punkt;
 						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
+						break;
 					}
 					return false;
 				}
@@ -322,6 +324,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 						break;
 					case 2:
 						eatenPowerUp=punkt;
+						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
 						break;
 					}
 					return false;
@@ -341,6 +347,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 					case 2:
 						eatenPowerUp=punkt;
 						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
+						break;
 					}
 					return false;
 				}
@@ -354,6 +364,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 						break;
 					case 2:
 						eatenPowerUp=punkt;
+						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
 						break;
 					}
 					return false;
@@ -373,6 +387,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 					case 2:
 						eatenPowerUp=punkt;
 						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
+						break;
 					}
 					return false;
 				}
@@ -386,6 +404,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 						break;
 					case 2:
 						eatenPowerUp=punkt;
+						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
 						break;
 					}
 					return false;
@@ -404,6 +426,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 					case 2:
 						eatenPowerUp=punkt;
 						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
+						break;
 					}
 					return false;
 				}
@@ -417,6 +443,10 @@ public class ObrazFrame extends JFrame implements KeyListener{
 						break;
 					case 2:
 						eatenPowerUp=punkt;
+						break;
+					case 4:
+						if(!tempDestroyedWalls.contains(punkt))
+						tempDestroyedWalls.add(punkt);
 						break;
 					}
 					return false;
@@ -731,7 +761,88 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		
 		powerUpsList.removeAll(PowerUpsPosition);
 	}
-	public void changeMap()
+	public void DestroyWall()
+	{
+		
+	}
+	public void Ghost_Projectile_Collision_Check()
+	{
+		Set <Point> MonsterPositions=new HashSet<Point>();
+		for(Creep monster : MonstersList)
+		{
+		Point tempPunkt=new Point(monster.getPixelsX()+monster.getHeight()/2,monster.getPixelsY()+monster.getHeight()/2,16,16);
+		MonsterPositions.add(tempPunkt);
+		
+		}
+		Set <Point> ProjectilesPositions = new HashSet<Point>();
+
+		Set <Creep> deletedMonsters= new HashSet<Creep>();
+		for(Projectile projectile : ProjectilesList)
+		{
+			ProjectilesPositions.add(new Point(projectile.getPixelsX()+projectile.getHeight()/2, projectile.getPixelsY()+projectile.getHeight()/2, 16, 16));
+			if(!collision2(projectile.getDir(), projectile, MonsterPositions, 1, 3))
+			{
+				
+				for(Creep monster : MonstersList)
+				{
+					if(!collision2(monster.getDir(), monster, ProjectilesPositions, 1, 3))
+					{
+						if(!deletedMonsters.contains(monster))
+						deletedMonsters.add(monster);
+					}
+				}
+				ProjectilesList.remove(projectile);
+			}
+		}
+		for(Creep monster: deletedMonsters)
+		{
+			MonstersList.remove(monster);
+		}
+		
+		MonsterPositions.removeAll(MonsterPositions);
+	}
+	public void Projectile_Wall_Collision_Check(){
+		Set <Wall> destroyedWalls = new HashSet<Wall>();
+		Set <Projectile> destroyedProjectiles = new HashSet<Projectile>();
+		Set <Point> tempMapPoints= new HashSet<Point>();
+		for(Point punkt:mapPoints)
+		{
+			tempMapPoints.add(new Point(punkt.getX()*32, punkt.getY()*32, 32, 32));
+		}
+		for(Projectile projectile : ProjectilesList)
+		{
+			if(!collision2(projectile.getDir(), projectile, tempMapPoints, 1, 4))
+			{
+				
+				destroyedProjectiles.add(projectile);
+				System.out.println("Collision");
+			}
+		}
+		for(Point punkt : tempDestroyedWalls)
+		{
+			
+			
+			for(Wall wall:wallsList)
+			{
+				if(wall.getX()==punkt.getX() && wall.getY()==punkt.getY() && wall.isDestroyable)
+					{destroyedWalls.add(wall);
+					mapPoints.remove(punkt);}
+			}
+		}
+		for(Wall wall:destroyedWalls)
+		{
+			if(wall.isDestroyable)
+			wallsList.remove(wall);
+		}
+		tempDestroyedWalls.clear();
+		for(Projectile projectile:destroyedProjectiles)
+		{
+			ProjectilesList.remove(projectile);
+		}
+		
+		
+	}
+public void changeMap()
 	{
 		
 	}
@@ -747,7 +858,11 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		break;
 		case 3:
 			if(Player.getSpeed()==playerSpeed)
-			{
+			{	
+				if(Player.getPixelsX()%(2*playerSpeed)!=0)
+				Player.setPixelsX(Player.getPixelsX()+playerSpeed);
+				if(Player.getPixelsY()%(2*playerSpeed)!=0)
+					Player.setPixelsY(Player.getPixelsY()+playerSpeed);
 				Player.setSpeed(Player.getSpeed()*2);
 				Player.setPowerUpDuration(PowerUp.duration);
 				
@@ -775,7 +890,14 @@ public class ObrazFrame extends JFrame implements KeyListener{
 		}
 	}
 	
-	
+	public void Shot(Packman player)
+	{
+		if(player.getLasersCounter()>0)
+		{
+			ProjectilesList.add(new Projectile(player, player.getPixelsX(), player.getPixelsY()));
+			player.setLasersCounter(player.getLasersCounter()-1);
+		}
+	}
 	
 	
 	public ObrazFrame() {	
@@ -830,8 +952,14 @@ public class ObrazFrame extends JFrame implements KeyListener{
 								monster.setSpeed(monsterSpeed);
 							}
 							}
+							for(Projectile bullet : ProjectilesList)
+							{
+								Move(bullet);
+							}
 							Ghost_Player_Collision_Check();
 							PowerUp_Player_Collision_Check();
+							Ghost_Projectile_Collision_Check();
+							Projectile_Wall_Collision_Check();
 							eatCoins();
 						}
 					}
@@ -869,6 +997,9 @@ public class ObrazFrame extends JFrame implements KeyListener{
 					break;
 				case KeyEvent.VK_P:
 					isGamePaused=!isGamePaused;
+					break;
+				case KeyEvent.VK_SPACE:
+					Shot(Player);
 					break;
 			
 			}

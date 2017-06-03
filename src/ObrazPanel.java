@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,15 +6,15 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class ObrazPanel extends JPanel{
 	private static int blockPixels=32;
 	private static int playerPixels=32;
-	private BufferedImage imageWall,imagePlayer,imageMonster,imageCoin;
+	private BufferedImage imageWall,imagePlayer,imageMonster,imageCoin,imageProjectile;
 	private Set <Point> mapPoints;
 	private Set <Point> mapCoins;
+	private Set <Projectile> mapProjectiles;
 	private Packman Player;
 	private Creep Monster;
 	private Map map,coins;
@@ -154,9 +152,10 @@ public class ObrazPanel extends JPanel{
 		g2d.drawImage(imageMonster,Monster.getPixelsX(),Monster.getPixelsY(), this);
 		
 	}
-	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList,Set<PowerUp> powerUpsList) throws FileNotFoundException {
+	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList,Set<PowerUp> powerUpsList,Set <Projectile> mapProjectiles) throws FileNotFoundException {
 		super();
 		this.Player = Player;
+		this.mapProjectiles=mapProjectiles;
 		this.map=map;
 		this.coins=coins;
 		this.Monster = Monster;
@@ -166,11 +165,13 @@ public class ObrazPanel extends JPanel{
 		File imageWallFile = new File("Resources/Img/Blue.png");
 		File imagePlayerFile = new File("Resources/Img/Pacman45R.png");
 		File imageMonsterFile = new File("Resources/Img/creep_right.png");
+		File imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileUp.png");
 		try {
 			imageWall = ImageIO.read(imageWallFile);
 			imagePlayer = ImageIO.read(imagePlayerFile);
 			imageMonster = ImageIO.read(imageMonsterFile);
 			imageCoin = ImageIO.read(imageCoinFile);
+			imageProjectile = ImageIO.read(imageProjectileFile);
 		} catch (IOException e) {
 			System.err.println("Blad odczytu obrazka");
 			e.printStackTrace();
@@ -288,18 +289,49 @@ public class ObrazPanel extends JPanel{
 			drawMap(g);
 			drawPackman(g);
 			drawGUI(g);
-			
+			drawPowerUps(g);
 			for(Creep monster : MonstersList)
 			{
 			Monster=monster;
 			drawMonster(g);
 			}
-			drawPowerUps(g);
+			drawProjetciles(g);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	public void drawProjetciles(Graphics g){
+		Graphics2D g2d = (Graphics2D) g;
+		File imageProjectileFile = null;
+		for(Projectile bullet: mapProjectiles)
+		{
+			switch (bullet.getDir()) {
+			case "Left":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileLeft.png");
+				break;
 
+			case "Right":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileRight.png");
+				break;
+				
+			case "Up":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileUp.png");
+				break;
+				
+			case "Down":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileDown.png");
+				break;
+			}
+			
+			try {
+				imageProjectile = ImageIO.read(imageProjectileFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			g2d.drawImage(imageProjectile, bullet.getPixelsX(), bullet.getPixelsY(), this);
+		}
+	}
 	
 }
