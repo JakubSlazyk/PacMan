@@ -59,4 +59,12 @@ public abstract class Character {
 	public void setNewDir(String dir) {
 		this.NewDir = dir;
 	}
+	public void UpdateCords()
+	{
+		//if (pixels.getX()/32 == (pixels.getX()+32)/32) 
+			cord.setX(pixels.getX()/32);
+		
+		//if (pixels.getY()/32 == (pixels.getY()+32)/32)
+			cord.setY(pixels.getY()/32);
+	}
 }
