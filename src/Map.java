@@ -5,11 +5,21 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
 
+/**Klasa umieszczajaca obraz w konkretnych miejscach w ramce.
+ * 
+ *
+ */
 public class Map {
 
 	Set<Point> mapPoints;
 	int WallHeight;
 	int WallWidth;
+	/**Na podstawie zadanego pliku zczytywane sa wspolrzedne, na ktorych ma byc umiejscowiony obrazek zadany w parametrze.
+	 * @param height Wysokosc obrazu.
+	 * @param width Szerokosc obrazu.
+	 * @param directory Sciezka do pliku obrazu.
+	 * @throws FileNotFoundException Wyjatek wyrzucany w przypadku nieznalezielnia pliku.
+	 */
 	public Map(int height,int width,String directory) throws FileNotFoundException
 	{
 		mapPoints = new HashSet<Point>();
@@ -49,9 +59,12 @@ public class Map {
 				}
 				
 			}
-			ShowMap();
+			//ShowMap();
 			
 	}
+	/**Metoda iterujaca po wszystkich punktach mapy i wypisujaca wspolrzedne do niej nalezace.
+	 * 
+	 */
 	public void ShowMap()
 	{	int i=0;
 		for(Point punkt : mapPoints)

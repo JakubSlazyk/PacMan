@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,20 +6,29 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**Klasa z teksturami kazdego obiektu wykorzystywanego w grze. 
+ * Zapisuje pozycje wystepowania danych obiektow i rysuje je w opdpowiendim miejscu.
+ * 
+ *
+ */
 public class ObrazPanel extends JPanel{
 	private static int blockPixels=32;
 	private static int playerPixels=32;
-	private BufferedImage imageWall,imagePlayer,imageMonster,imageCoin;
+	private BufferedImage imageWall,imagePlayer,imageMonster,imageCoin,imageProjectile;
 	private Set <Point> mapPoints;
 	private Set <Point> mapCoins;
+	private Set <Projectile> mapProjectiles;
 	private Packman Player;
 	private Creep Monster;
 	private Map map,coins;
 	private Set <Creep> MonstersList;
 	private Set <PowerUp> powerUpsList;
+	/** Wrzuca do mapy wspolrzedne z punktow blokow. Na te wspolrzedne nanoszony jest obraz blokow.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * @throws FileNotFoundException Wrzycany wyjatek jesli nie znajdzie pliku.
+	 */
 	public void drawMap(Graphics g) throws FileNotFoundException
 	{	Graphics2D g2d = (Graphics2D) g;
 		
@@ -32,6 +39,10 @@ public class ObrazPanel extends JPanel{
 		}
 		
 	}
+	/** Wrzuca do mapy wspolrzedne z punktow monet. Na te wspolrzedne nanoszony jest obraz monet.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * @throws FileNotFoundException Wrzycany wyjatek jesli nie znajdzie pliku.
+	 */
 	public void drawCoins(Graphics g) throws FileNotFoundException
 	{	Graphics2D g2d = (Graphics2D) g;
 		
@@ -43,6 +54,10 @@ public class ObrazPanel extends JPanel{
 		}
 		
 	}
+	/** Ustawia teksture pacmana w zaleznosci od jego pozycji pixeli oraz kierunku.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * 
+	 */
 	public void drawPackman(Graphics g) 
 	{
 		int x;
@@ -107,6 +122,10 @@ public class ObrazPanel extends JPanel{
 		g2d.drawImage(imagePlayer,Player.getPixelsX(),Player.getPixelsY(), this);
 		
 	}
+	/** Ustawia teksturepotwora w zaleznosci od jego jego.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * 
+	 */
 	public void drawMonster(Graphics g) 
 	{
 		Graphics2D g2d = (Graphics2D) g;
@@ -114,7 +133,7 @@ public class ObrazPanel extends JPanel{
 		switch(Monster.getDir())
 		{
 			case "Up":
-				tempCreep=new File("Resources/Img/creep_left.png");
+				tempCreep=new File("Resources/Img/ghost.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -123,7 +142,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Down":
-				tempCreep=new File("Resources/Img/creep_right.png");
+				tempCreep=new File("Resources/Img/ghost2.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -132,7 +151,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Left":
-				tempCreep=new File("Resources/Img/creep_left.png");
+				tempCreep=new File("Resources/Img/ghost.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -141,7 +160,7 @@ public class ObrazPanel extends JPanel{
 				}
 				break;
 			case "Right":
-				tempCreep=new File("Resources/Img/creep_right.png");
+				tempCreep=new File("Resources/Img/ghost2.png");
 				try {
 					imageMonster = ImageIO.read(tempCreep);
 				} catch (IOException e) {
@@ -154,9 +173,21 @@ public class ObrazPanel extends JPanel{
 		g2d.drawImage(imageMonster,Monster.getPixelsX(),Monster.getPixelsY(), this);
 		
 	}
-	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList,Set<PowerUp> powerUpsList) throws FileNotFoundException {
+	
+	/** Konstruktor. Przyjmuje za parametry obiekty potrzebne do gry, i kopiuje je do swoich pol, w celu dogrania im tekstur.
+	 * @param Player Obiekt gracza.
+	 * @param map Mapa, gdzie ulokowane sa sciany.
+	 * @param Monster Obiekt potwora.
+	 * @param coins Mapa, gdzie ulokowane sa monety
+	 * @param MonstersList Kolekcja potworow.
+	 * @param powerUpsList Kolekcja bonusow. 
+	 * @param mapProjectiles Kolekcja strzlakow.
+	 * @throws FileNotFoundException W przypadku nie znalezienia pliku.
+	 */
+	public ObrazPanel(Packman Player,Map map, Creep Monster,Map coins,Set <Creep> MonstersList,Set<PowerUp> powerUpsList,Set <Projectile> mapProjectiles) throws FileNotFoundException {
 		super();
 		this.Player = Player;
+		this.mapProjectiles=mapProjectiles;
 		this.map=map;
 		this.coins=coins;
 		this.Monster = Monster;
@@ -166,11 +197,13 @@ public class ObrazPanel extends JPanel{
 		File imageWallFile = new File("Resources/Img/Blue.png");
 		File imagePlayerFile = new File("Resources/Img/Pacman45R.png");
 		File imageMonsterFile = new File("Resources/Img/creep_right.png");
+		File imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileUp.png");
 		try {
 			imageWall = ImageIO.read(imageWallFile);
 			imagePlayer = ImageIO.read(imagePlayerFile);
 			imageMonster = ImageIO.read(imageMonsterFile);
 			imageCoin = ImageIO.read(imageCoinFile);
+			imageProjectile = ImageIO.read(imageProjectileFile);
 		} catch (IOException e) {
 			System.err.println("Blad odczytu obrazka");
 			e.printStackTrace();
@@ -180,8 +213,14 @@ public class ObrazPanel extends JPanel{
 		setPreferredSize(dimension);
 		
 	}
+
+	/** Rysuje wynik, zmienia postac komputerowa na obrazkowa
+	 * @param scoreLength Dlugosc napisu.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 */
 	public void drawScore(int scoreLength,Graphics g)
-	{	Graphics2D g2d = (Graphics2D) g;
+	{	
+		Graphics2D g2d = (Graphics2D) g;
 		int temp=Player.getPoints();
 		int wykl=(int) Math.pow(10, (double)scoreLength-1);
 		int modulo=1;
@@ -239,6 +278,10 @@ public class ObrazPanel extends JPanel{
 			
 		}
 	}
+	
+	/** Rysuje GUI po prawej stronie ekranu, w ktorym znajduja sie zycia oraz ilosc punktow gracza.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 */
 	public void drawGUI(Graphics g)
 	{
 		Graphics2D g2d = (Graphics2D) g;
@@ -248,10 +291,16 @@ public class ObrazPanel extends JPanel{
 		g2d.drawLine(804, 4, 996, 4);
 		g2d.drawLine(996, 4, 996, 636);
 		g2d.drawLine(801, 636, 996, 636);
+		
 		//////////
 		File imageScoreFile = new File("Resources/Img/score.png");
+		File lifeFile =new File("Resources/Img/Pacman45R.png");
 		try {
 			BufferedImage imageScore = ImageIO.read(imageScoreFile);
+			BufferedImage life = ImageIO.read(lifeFile);
+			if (Player.getLife() == 3)  g2d.drawImage(life, 850, 120, this);
+			if (Player.getLife() >= 2)  g2d.drawImage(life, 884, 120, this);
+			if (Player.getLife() >= 1)  g2d.drawImage(life, 918, 120, this);
 			g2d.drawImage(imageScore, 848, 50, this);
 			drawScore(4,g);
 			
@@ -262,17 +311,26 @@ public class ObrazPanel extends JPanel{
 		
 		
 	}
+	
+	/** Metoda pobierajaca plik z obrazem pocisku a nastepnie go rysujaca.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * @param powerUp powerUP ktory ma byc narysowany.
+	 */
 	public void drawPowerUp(Graphics g,PowerUp powerUp)
 	{
 		Graphics2D g2d = (Graphics2D) g;
 		try {
 			BufferedImage imagePowerUp = ImageIO.read(powerUp.getPowerUpFile());
-			g2d.drawImage(imagePowerUp, powerUp.getX(), powerUp.getPixelsY(), this);	
+			g2d.drawImage(imagePowerUp, powerUp.getPixelsX(), powerUp.getPixelsY(), this);	
 		} catch (IOException e) {
 		
 			e.printStackTrace();
 		}
 	}
+	/** Wywoluje metode rysowania PowerUp na kazdym bonusie w kolekcji.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * 
+	 */
 	public void drawPowerUps(Graphics g) {
 		
 			for(PowerUp powerUp: powerUpsList)
@@ -294,11 +352,48 @@ public class ObrazPanel extends JPanel{
 			Monster=monster;
 			drawMonster(g);
 			}
+			drawProjetciles(g);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	/** Ustawia teksture pocisku w zaleznosci od jego kierunku. Wywoluje sie dla kazdego pocisku, w kolekcji.
+	 * @param g Moze byc rozumiany jako obiekt urzadzenia wyjsciowego, tworzony samoistnie.
+	 * 
+	 */
+	public void drawProjetciles(Graphics g){
+		Graphics2D g2d = (Graphics2D) g;
+		File imageProjectileFile = null;
+		for(Projectile bullet: mapProjectiles)
+		{
+			switch (bullet.getDir()) {
+			case "Left":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileLeft.png");
+				break;
 
+			case "Right":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileRight.png");
+				break;
+				
+			case "Up":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileUp.png");
+				break;
+				
+			case "Down":
+				imageProjectileFile = new File("Resources/Img/PowerUps/ProjectileDown.png");
+				break;
+			}
+			
+			try {
+				imageProjectile = ImageIO.read(imageProjectileFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			g2d.drawImage(imageProjectile, bullet.getPixelsX(), bullet.getPixelsY(), this);
+		}
+	}
+	
 	
 }
